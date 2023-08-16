@@ -13,12 +13,18 @@
     "tailwindcss": "^3.3.3",
     "postcss": "^8.4.28",
     "autoprefixer": "^10.4.15",
-    "tailwind-merge": "^1.14.0"
+    "tailwind-merge": "^1.14.0",
+    "prettier": "^3.0.2"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "eject": "react-scripts eject"
+  },
+  "prettier": {
+    "singleQuote": true,
+    "semi": false,
+    "trailingComma": "all"
   },
   "browserslist": {
     "production": [

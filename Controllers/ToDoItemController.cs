@@ -1,5 +1,4 @@
-﻿using System.Net;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using ToDoApp.Models.Dto;
 using ToDoApp.Models.Entities;
 using ToDoApp.Models.Services;

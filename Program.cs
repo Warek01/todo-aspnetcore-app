@@ -43,6 +43,11 @@ if (!app.Environment.IsDevelopment()) {
 app.UseHttpsRedirection();
 app.UseFileServer();
 app.UseRouting();
+app.UseCors(options => {
+  options.AllowAnyOrigin();
+  options.AllowAnyHeader();
+  options.AllowAnyMethod();
+});
 
 app.MapControllerRoute(
   name: "default",

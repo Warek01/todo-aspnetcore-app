@@ -1,26 +1,27 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { useEffect, useState } from 'react'
+
+import { TodoList } from './components'
+import { api } from './api'
+import { TodoItem } from './types'
 
 function App() {
+  const [items, setItems] = useState<TodoItem[]>([])
+
+  useEffect(() => {
+    const fetchItems = async () => {
+      setItems(await api.getAll())
+    }
+
+    fetchItems()
+  }, [])
+
+  console.log(items)
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="bg-red-600">
+      <TodoList />
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
