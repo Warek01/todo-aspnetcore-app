@@ -1,11 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Net;
+using System.Text.Json;
+using Microsoft.AspNetCore.Mvc;
 using ToDoApp.Models.Dto;
 using ToDoApp.Models.Entities;
 using ToDoApp.Models.Services;
 
 namespace ToDoApp.Controllers;
 
-[Route("Todo")]
+[Route("Todo"), ApiController]
 public class ToDoItemController : Controller, ITodoItemController {
   private readonly ITodoService _todoService;
 
@@ -14,23 +16,23 @@ public class ToDoItemController : Controller, ITodoItemController {
   }
 
   [HttpGet, Route("Find/{id:int:min(0):required}")]
-  public async Task<TodoItem?> Find(int id) {
-    return await _todoService.Find(id, Response);
+  public Task<TodoItem?> Find(int id) {
+    return _todoService.Find(id, Response);
   }
 
   [HttpPost, Route("Create")]
-  public async Task<TodoItem?> Create([FromBody] CreateTodoItemDto dto) {
-    return await _todoService.Create(dto);
+  public Task<TodoItem?> Create([FromBody] CreateTodoItemDto dto) {
+    return _todoService.Create(dto);
   }
 
   [HttpDelete, Route("Delete/{id:int:min(0):required}")]
-  public async Task<TodoItem?> Delete(int id) {
-    return await _todoService.Delete(id, Response);
+  public Task<TodoItem?> Delete(int id) {
+    return _todoService.Delete(id, Response);
   }
 
   [HttpPatch, Route("Update/{id:int:min(0):required}")]
   public Task<TodoItem?> Update(int id, UpdateTodoItemDto dto) {
-    throw new NotImplementedException();
+    return _todoService.Update(id, dto, Response);
   }
 
   [HttpGet, Route("All")]

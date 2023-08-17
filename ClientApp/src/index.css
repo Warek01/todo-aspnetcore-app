@@ -2,3 +2,15 @@
 @import 'tailwindcss/components.css';
 @import 'tailwindcss/utilities.css';
 @import 'tailwindcss/variants.css';
+
+input {
+  @apply accent-emerald-400;
+}
+
+*:focus {
+  @apply outline outline-emerald-400;
+}
+
+.capitalize-first::first-letter {
+  @apply uppercase;
+}

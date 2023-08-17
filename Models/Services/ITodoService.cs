@@ -8,5 +8,5 @@ public interface ITodoService {
   Task<IEnumerable<TodoItem>> GetAll();
   Task<TodoItem?>             Create(CreateTodoItemDto dto);
   Task<TodoItem?>             Delete(int               id, HttpResponse      response);
-  Task<TodoItem?>             Update(int               id, UpdateTodoItemDto dto);
+  Task<TodoItem?>             Update(int               id, UpdateTodoItemDto dto, HttpResponse response);
 }

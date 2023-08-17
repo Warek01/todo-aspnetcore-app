@@ -15,11 +15,11 @@ public class TodoService : ITodoService {
   public async Task<TodoItem?> Find(int id, HttpResponse response) {
     TodoItem? item = await _dbContext.TodoItems.FindAsync(id);
 
-    if (item is not null) {
+    if (item is null) {
       response.StatusCode = (int)HttpStatusCode.NotFound;
     }
 
-    return null;
+    return item;
   }
 
   public async Task<TodoItem?> Create(CreateTodoItemDto dto) {
@@ -47,11 +47,25 @@ public class TodoService : ITodoService {
     return item;
   }
 
-  public async Task<TodoItem?> Update(int id, UpdateTodoItemDto dto) {
-    throw new NotImplementedException();
+  public async Task<TodoItem?> Update(int id, UpdateTodoItemDto dto, HttpResponse response) {
+    TodoItem? item = await _dbContext.TodoItems.FindAsync(id);
+
+    if (item is null) {
+      response.StatusCode = (int)HttpStatusCode.NotFound;
+      return null;
+    }
+
+    item.Description = dto.Description ?? item.Description;
+    item.IsChecked   = dto.IsChecked   ?? item.IsChecked;
+    await _dbContext.SaveChangesAsync();
+
+    return item;
   }
 
   public async Task<IEnumerable<TodoItem>> GetAll() {
-    return await _dbContext.TodoItems.OrderByDescending(t => t.UpdatedAt).ToListAsync();
+    return await _dbContext.TodoItems
+                           .OrderBy(t => t.IsChecked)
+                           .ThenByDescending(t => t.UpdatedAt)
+                           .ToListAsync();
   }
 }

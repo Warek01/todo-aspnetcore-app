@@ -1,25 +1,42 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 
-import { TodoList } from './components'
+import type { ITodoItem } from './types'
 import { api } from './api'
-import { TodoItem } from './types'
+import { CreateTodoItem, TodoList } from './components'
 
 function App() {
-  const [items, setItems] = useState<TodoItem[]>([])
+  const [items, setItems] = useState<ITodoItem[]>([])
 
-  useEffect(() => {
-    const fetchItems = async () => {
-      setItems(await api.getAll())
-    }
+  const fetchItems = useCallback(async () => {
+    setItems(await api.getAll())
+  }, [])
 
+  const updateItem = useCallback(
+    async (id: number, dto: Partial<ITodoItem>) => {
+      await api.update(id, dto)
+      fetchItems()
+    },
+    [],
+  )
+
+  const deleteItem = useCallback(async (id: number) => {
+    await api.delete(id)
     fetchItems()
   }, [])
 
-  console.log(items)
+  const createItem = useCallback(async (dto: Partial<ITodoItem>) => {
+    await api.create(dto)
+    fetchItems()
+  }, [])
+
+  useEffect(() => {
+    fetchItems()
+  }, [])
 
   return (
-    <div className="bg-red-600">
-      <TodoList />
+    <div className="flex flex-col items-center py-12 gap-16">
+      <CreateTodoItem createItem={createItem} />
+      <TodoList items={items} updateItem={updateItem} deleteItem={deleteItem} />
     </div>
   )
 }
