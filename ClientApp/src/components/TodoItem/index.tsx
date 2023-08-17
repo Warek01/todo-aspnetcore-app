@@ -1,16 +1,33 @@
-import { ChangeEventHandler, FC, useCallback } from 'react'
+import {
+  ChangeEventHandler,
+  Dispatch,
+  FC,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useRef,
+} from 'react'
 
 import type { ITodoItem } from '../../types'
-import { Bin, Pencil } from '../../icons'
+import { Bin, Check, Pencil } from '../../icons'
 
 interface Props {
   item: ITodoItem
+  isEditing: boolean
   updateItem: (id: number, dto: Partial<ITodoItem>) => Promise<void>
   deleteItem: (id: number) => Promise<void>
+  setEditingItem: Dispatch<SetStateAction<ITodoItem | null>>
 }
 
-const TodoItem: FC<Props> = ({ item, updateItem, deleteItem }) => {
+const TodoItem: FC<Props> = ({
+  item,
+  updateItem,
+  deleteItem,
+  isEditing,
+  setEditingItem,
+}) => {
   const { id, isChecked, description, updatedAt, createdAt } = item
+  const descriptionRef = useRef<HTMLInputElement>(null)
 
   const handleCheck: ChangeEventHandler<HTMLInputElement> = useCallback(
     (event) => {
@@ -19,10 +36,47 @@ const TodoItem: FC<Props> = ({ item, updateItem, deleteItem }) => {
     [item],
   )
 
+  const handleEdit = useCallback(async () => {
+    const newDescription = descriptionRef.current?.innerText.trim() ?? ''
+
+    if (!newDescription) {
+      return
+    }
+
+    setEditingItem(null)
+    await updateItem(id, {
+      description: newDescription,
+    })
+  }, [])
+
+  useEffect(() => {
+    if (isEditing) {
+      descriptionRef.current?.focus()
+
+      const handleKeyDown = (event: KeyboardEvent) => {
+        if (event.key === 'Enter' && !event.shiftKey) {
+          handleEdit()
+        }
+      }
+
+      window.addEventListener('keydown', handleKeyDown)
+
+      return () => {
+        window.removeEventListener('keydown', handleKeyDown)
+      }
+    }
+  }, [isEditing])
+
   return (
     <li className="p-6 flex justify-between gap-3">
       <label htmlFor={id.toString()}>
-        <p className={`${isChecked && 'line-through'} text-gray-700 text-lg`}>
+        <p
+          ref={descriptionRef}
+          contentEditable={isEditing}
+          className={`${isChecked && 'line-through'} ${
+            isEditing ? 'cursor-text' : 'cursor-pointer'
+          } text-gray-700 text-lg whitespace-pre-wrap`}
+        >
           {description}
         </p>
       </label>
@@ -31,15 +85,22 @@ const TodoItem: FC<Props> = ({ item, updateItem, deleteItem }) => {
           id={id.toString()}
           type="checkbox"
           defaultChecked={isChecked}
+          disabled={isEditing}
           onChange={handleCheck}
           className="transform-gpu scale-110"
         />
         <button onClick={() => deleteItem(id)} aria-label="delete">
           <Bin width={18} height={18} className="fill-red-500" />
         </button>
-        <button aria-label="edit">
-          <Pencil width={18} height={18} className="fill-emerald-400" />
-        </button>
+        {isEditing ? (
+          <button aria-label="save edit" onClick={handleEdit}>
+            <Check width={18} height={18} className="fill-emerald-400" />
+          </button>
+        ) : (
+          <button aria-label="edit" onClick={() => setEditingItem(item)}>
+            <Pencil width={18} height={18} className="fill-emerald-400" />
+          </button>
+        )}
       </div>
     </li>
   )
