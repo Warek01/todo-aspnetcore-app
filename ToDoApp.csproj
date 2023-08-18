@@ -33,6 +33,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="ClientApp\node_modules\" />
     <Folder Include="Models\Entities\" />
   </ItemGroup>
 

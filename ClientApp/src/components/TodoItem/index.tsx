@@ -9,7 +9,7 @@ import {
 } from 'react'
 
 import type { ITodoItem } from '../../types'
-import { Bin, Check, Pencil } from '../../icons'
+import { DeleteBin, Check, Pencil } from '../../icons'
 
 interface Props {
   item: ITodoItem
@@ -90,7 +90,7 @@ const TodoItem: FC<Props> = ({
           className="transform-gpu scale-110"
         />
         <button onClick={() => deleteItem(id)} aria-label="delete">
-          <Bin width={18} height={18} className="fill-red-500" />
+          <DeleteBin width={18} height={18} className="fill-red-500" />
         </button>
         {isEditing ? (
           <button aria-label="save edit" onClick={handleEdit}>

@@ -3,6 +3,10 @@
 @import 'tailwindcss/utilities.css';
 @import 'tailwindcss/variants.css';
 
+body {
+  @apply bg-stone-950;
+}
+
 input {
   @apply accent-emerald-400;
 }
